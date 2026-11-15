@@ -10,4 +10,6 @@ data class UpdateVocabularyItemRequest(
 
     @field:NotBlank
     val definition: String,
+
+    val answers: String? = null,
 )

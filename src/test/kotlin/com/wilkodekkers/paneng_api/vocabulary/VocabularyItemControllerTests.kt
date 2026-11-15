@@ -44,6 +44,7 @@ class VocabularyItemControllerTests(
         chapterId = 1L,
         term = "กิน",
         definition = "To eat",
+        answers = "To eat",
         createdAt = Instant.parse("2025-01-01T10:00:00Z"),
         updatedAt = Instant.parse("2025-01-01T10:00:00Z")
     )
@@ -53,6 +54,7 @@ class VocabularyItemControllerTests(
         chapterId = 1L,
         term = "ดื่ม",
         definition = "To drink",
+        answers = "To drink",
         createdAt = Instant.parse("2025-01-02T10:00:00Z"),
         updatedAt = Instant.parse("2025-01-02T10:00:00Z")
     )

@@ -30,6 +30,9 @@ class VocabularyItem(
     @Column(nullable = false, columnDefinition = "TEXT")
     var definition: String,
 
+    @Column(nullable = false, columnDefinition = "TEXT")
+    var answers: String,
+
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: Instant = Instant.now(),
 

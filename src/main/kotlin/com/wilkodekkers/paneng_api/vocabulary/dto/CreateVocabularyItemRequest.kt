@@ -10,4 +10,6 @@ data class CreateVocabularyItemRequest(
 
     @field:NotBlank
     val definition: String,
+
+    val answers: String? = null,
 )

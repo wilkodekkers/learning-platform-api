@@ -7,6 +7,7 @@ data class VocabularyItemResponse(
     val chapterId: Long,
     val term: String,
     val definition: String,
+    val answers: String,
     val createdAt: Instant,
     val updatedAt: Instant,
 )

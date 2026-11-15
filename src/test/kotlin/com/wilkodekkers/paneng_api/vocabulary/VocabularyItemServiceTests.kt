@@ -55,12 +55,14 @@ class VocabularyItemServiceTests {
     private fun createVocabularyItem(
         id: Long = 1L,
         term: String = "กิน",
-        definition: String = "To eat"
+        definition: String = "To eat",
+        answers: String = definition
     ) = VocabularyItem(
         id = id,
         chapter = chapter,
         term = term,
-        definition = definition
+        definition = definition,
+        answers = answers
     )
 
     // FIND ALL
@@ -244,6 +246,74 @@ class VocabularyItemServiceTests {
     }
 
     @Test
+    fun `create should default answers to definition when answers are not provided`() {
+        val request = CreateVocabularyItemRequest(
+            term = "กิน",
+            definition = "To eat"
+        )
+
+        `when`(
+            chapterRepository.findByIdAndBookIdAndBookUserId(1L, 1L, 1L)
+        ).thenReturn(chapter)
+
+        `when`(
+            vocabularyItemRepository.save(any(VocabularyItem::class.java))
+        ).thenAnswer { invocation ->
+            invocation.getArgument<VocabularyItem>(0)
+        }
+
+        val result = vocabularyItemService.create(1L, 1L, 1L, request)
+
+        assertEquals("To eat", result.answers)
+    }
+
+    @Test
+    fun `create should default answers to definition when answers are blank`() {
+        val request = CreateVocabularyItemRequest(
+            term = "กิน",
+            definition = "To eat",
+            answers = "  "
+        )
+
+        `when`(
+            chapterRepository.findByIdAndBookIdAndBookUserId(1L, 1L, 1L)
+        ).thenReturn(chapter)
+
+        `when`(
+            vocabularyItemRepository.save(any(VocabularyItem::class.java))
+        ).thenAnswer { invocation ->
+            invocation.getArgument<VocabularyItem>(0)
+        }
+
+        val result = vocabularyItemService.create(1L, 1L, 1L, request)
+
+        assertEquals("To eat", result.answers)
+    }
+
+    @Test
+    fun `create should store provided answers`() {
+        val request = CreateVocabularyItemRequest(
+            term = "กิน",
+            definition = "To eat",
+            answers = "eat; to eat; have a meal"
+        )
+
+        `when`(
+            chapterRepository.findByIdAndBookIdAndBookUserId(1L, 1L, 1L)
+        ).thenReturn(chapter)
+
+        `when`(
+            vocabularyItemRepository.save(any(VocabularyItem::class.java))
+        ).thenAnswer { invocation ->
+            invocation.getArgument<VocabularyItem>(0)
+        }
+
+        val result = vocabularyItemService.create(1L, 1L, 1L, request)
+
+        assertEquals("eat; to eat; have a meal", result.answers)
+    }
+
+    @Test
     fun `create should throw NotFoundException when chapter does not belong to user`() {
         val request = CreateVocabularyItemRequest(
             term = "กิน",
@@ -274,6 +344,7 @@ class VocabularyItemServiceTests {
             chapter = chapter,
             term = "กิน",
             definition = "Old definition",
+            answers = "Old definition",
             updatedAt = oldTimestamp
         )
 
@@ -303,6 +374,28 @@ class VocabularyItemServiceTests {
         assertEquals("รับประทาน", result.term)
         assertEquals("To eat (formal)", result.definition)
         assertTrue(result.updatedAt.isAfter(oldTimestamp))
+    }
+
+    @Test
+    fun `update should update answers`() {
+        val item = createVocabularyItem()
+
+        val request = UpdateVocabularyItemRequest(
+            term = "กิน",
+            definition = "To eat",
+            answers = "eat; to eat"
+        )
+
+        `when`(
+            vocabularyItemRepository
+                .findByIdAndChapterIdAndChapterBookIdAndChapterBookUserId(
+                    1L, 1L, 1L, 1L
+                )
+        ).thenReturn(item)
+
+        val result = vocabularyItemService.update(1L, 1L, 1L, 1L, request)
+
+        assertEquals("eat; to eat", result.answers)
     }
 
     @Test

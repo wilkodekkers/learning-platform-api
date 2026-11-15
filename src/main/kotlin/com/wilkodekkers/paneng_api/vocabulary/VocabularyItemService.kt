@@ -56,6 +56,7 @@ class VocabularyItemService(
             chapter = chapter,
             term = request.term,
             definition = request.definition,
+            answers = resolveAnswers(request.answers, request.definition),
         )
 
         return vocabularyItemRepository.save(vocabularyItem).toResponse()
@@ -78,6 +79,7 @@ class VocabularyItemService(
 
         vocabularyItem.term = request.term
         vocabularyItem.definition = request.definition
+        vocabularyItem.answers = resolveAnswers(request.answers, request.definition)
         vocabularyItem.updatedAt = Instant.now()
 
         return vocabularyItem.toResponse()
@@ -99,6 +101,9 @@ class VocabularyItemService(
 
         vocabularyItemRepository.delete(vocabularyItem)
     }
+
+    private fun resolveAnswers(answers: String?, definition: String) =
+        answers?.takeIf { it.isNotBlank() } ?: definition
 
     private fun findChapterByIdAndUserId(
         bookId: Long,
@@ -134,6 +139,7 @@ class VocabularyItemService(
         chapterId = chapter.id,
         term = term,
         definition = definition,
+        answers = answers,
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
